@@ -1,16 +1,12 @@
+import { ProjectCard, ProjectCardSkeleton } from "@/components/project-card";
 import { ErrorToast, SuccessToast } from "@/utils/toast-modals";
-import { Truncate } from "@/utils/truncate";
 import { QueryObserverResult, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Image from "next/image";
 import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { MdDelete } from "react-icons/md";
 import { Presence } from "@/utils/motion-exports";
 import { RxCross2 } from "react-icons/rx";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Ids, IdsType } from "../utils/ids";
 
 const ProjectsPage = () => {
   const [showUpdate, setShowUpdate] = useState<boolean>(false);
@@ -67,51 +63,23 @@ const ProjectsPage = () => {
 
   return (
     <Fragment>
-      <div className="max-w-[1440px] mx-auto w-[95%] relative mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-start gap-4 mb-4">
+      <div className="max-w-360 mx-auto w-[95%] relative mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mb-4 px-4">
         {loading &&
-          Ids.map((id: IdsType) => (
-            <div
-              className="w-[90%] 376:w-[300px] h-[300px] overflow-auto scrollbar-2 rounded-md border-[2.5px] border-primary-100/50 flex flex-col gap-4 animate-pulse"
-              key={id?.id}
-            >
-              <div className="w-full h-64 bg-primary-100/30" />
-              <div className="flex flex-col gap-5 p-3 h-full">
-                <h3 className="h-4 w-full bg-primary-100/30 rounded-md" />
-                <h3 className="h-3 w-full bg-primary-100/30 rounded-md" />
-                <h3 className="h-5 w-[90%] bg-primary-100/30 rounded-md" />
-                <h3 className="h-3 w-[60%] bg-primary-100/30 rounded-md" />
-              </div>
-            </div>
+          Array.from({ length: 6 }).map((_, index) => (
+            <ProjectCardSkeleton key={index} />
           ))}
         {projects &&
           currentData?.map((project: any) => (
-            <div key={project?._id}>
-              <div className="h-[250px] overflow-y-hidden">
-                <Image
-                  src={project?.image}
-                  alt={project?.name}
-                  width={300}
-                  height={300}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="h-[40%]">
-                <h4>{project?.name}</h4>
-                <p>{Truncate(project?.desc, 16)}</p>
-                <div className="flex items-center gap-2">
-                  <FiEdit
-                    className="text-primary-100"
-                    onClick={() => {
-                      setSelectedItem(project), setShowUpdate(true);
-                    }}
-                  />
-                  <MdDelete
-                    className="text-red-500"
-                    onClick={() => deleteProject(project?._id)}
-                  />
-                </div>
-              </div>
-            </div>
+            <ProjectCard
+              key={project._id}
+              project={project}
+              admin
+              onEdit={() => {
+                setSelectedItem(project);
+                setShowUpdate(true);
+              }}
+              onDelete={() => deleteProject(project._id)}
+            />
           ))}
         <Presence>
           {showUpdate && selectedItem && (
@@ -123,7 +91,7 @@ const ProjectsPage = () => {
           )}
         </Presence>
       </div>
-      <div className="mb-16 max-w-[1440px] mx-auto">
+      <div className="mb-16 max-w-360 mx-auto">
         {projects && (
           // <ReactPaginate
           //   breakLabel="..."
@@ -221,7 +189,7 @@ export const UpdateProject = ({
       };
       const res = await axios.patch(
         `/api/up-edit-prosject?id=${item?._id}`,
-        formData
+        formData,
       );
       if (res.status === 200 || res.status === 201) {
         SuccessToast("Project created successfully");
@@ -239,14 +207,14 @@ export const UpdateProject = ({
   //
   //
   return (
-    <div className="fixed w-full top-0 left-0 bottom-0 flex flex-col justify-center items-center bg-bgDark/45 backdrop-blur-sm z-[999]">
-      <div className="relative h-[350px] overflow-y-auto my-auto bg-light-100 rounded-md p-4">
+    <div className="fixed w-full top-0 left-0 bottom-0 flex flex-col justify-center items-center bg-bgDark/45 backdrop-blur-sm z-999">
+      <div className="relative h-87.5 overflow-y-auto my-auto bg-light-100 rounded-md p-4">
         <RxCross2
           className="text-red-500 absolute right-2 top-2 text-3xl"
           onClick={() => setShowUpdate(false)}
         />
         <form
-          className="text-dark-100 w-[90%] sm:w-[450px] mx-auto flex flex-col gap-5 mt-8 mb-[50px]"
+          className="text-dark-100 w-[90%] sm:w-112.5 mx-auto flex flex-col gap-5 mt-8 mb-12.5"
           onSubmit={handleSubmit(createProject)}
         >
           <label htmlFor="name" className="flex flex-col gap-1">
@@ -270,8 +238,8 @@ export const UpdateProject = ({
                 {image
                   ? image?.name
                   : item?.image
-                  ? item?.image
-                  : "Upload Image"}
+                    ? item?.image
+                    : "Upload Image"}
               </p>
               <div className="bg-primary-200 text-light-100 py-2 px-2">
                 Browse
@@ -358,7 +326,7 @@ export const UpdateProject = ({
             <input
               id="topRated"
               type="checkbox"
-              className="w-[18px] h-[18px] border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
+              className="w-4.5 h-4.5 border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
               {...register("topRated")}
             />
             <small className="text-xs text-red-500">
