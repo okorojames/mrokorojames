@@ -49,6 +49,21 @@ const MagneticCursor = () => {
       onMove: (e: MouseEvent) => void;
     }[] = [];
 
+    // Determine magnetic strength per element:
+    // - inputs, textareas, labels, select: ring effect only, NO physical movement
+    // - buttons, [role='button']: very subtle pull (0.08)
+    // - links, [data-magnetic]: normal pull (0.15, or custom via data attr)
+    const NO_MOVE_TAGS = new Set(["INPUT", "TEXTAREA", "LABEL", "SELECT"]);
+
+    const getStrength = (el: Element): number => {
+      const custom = (el as HTMLElement).dataset.magneticStrength;
+      if (custom) return parseFloat(custom);
+      if (NO_MOVE_TAGS.has(el.tagName)) return 0;
+      if (el.tagName === "BUTTON" || el.getAttribute("role") === "button")
+        return 0.08;
+      return 0.15;
+    };
+
     const initMagnetics = () => {
       // Clean up previous listeners
       magneticEls.forEach(({ el, onEnter, onLeave, onMove }) => {
@@ -59,22 +74,23 @@ const MagneticCursor = () => {
       magneticEls.length = 0;
 
       const interactiveEls = document.querySelectorAll(
-        "a, button, [data-magnetic], input, label, [role='button']",
+        "a, button, [data-magnetic], input, textarea, label, select, [role='button']",
       );
 
       interactiveEls.forEach((el) => {
-        const strength = parseFloat(
-          (el as HTMLElement).dataset.magneticStrength || "0.3",
-        );
+        // Skip elements explicitly opted out
+        if ((el as HTMLElement).dataset.noMagnetic !== undefined) return;
+
+        const strength = getStrength(el);
 
         const onEnter = () => {
           gsap.to(ring, {
-            scale: 1.8,
+            scale: 1.5,
             borderColor: "rgba(116, 192, 252, 0.6)",
             duration: 0.3,
             ease: "power2.out",
           });
-          gsap.to(dot, { scale: 0.5, duration: 0.3 });
+          gsap.to(dot, { scale: 0.6, duration: 0.3 });
         };
 
         const onLeave = () => {
@@ -86,16 +102,21 @@ const MagneticCursor = () => {
           });
           gsap.to(dot, { scale: 1, duration: 0.3 });
 
-          // Reset magnetic pull
-          gsap.to(el, {
-            x: 0,
-            y: 0,
-            duration: 0.5,
-            ease: "elastic.out(1, 0.3)",
-          });
+          // Reset magnetic pull (only if element actually moves)
+          if (strength > 0) {
+            gsap.to(el, {
+              x: 0,
+              y: 0,
+              duration: 0.5,
+              ease: "elastic.out(1, 0.3)",
+            });
+          }
         };
 
         const onMove = (e: MouseEvent) => {
+          // Skip physical movement for zero-strength elements
+          if (strength === 0) return;
+
           const rect = (el as HTMLElement).getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
@@ -143,10 +164,12 @@ const MagneticCursor = () => {
     document.addEventListener("mouseup", onMouseUp);
     gsap.ticker.add(followRing);
 
-    // Init magnetics and re-init on DOM changes (for dynamically loaded content)
+    // Init magnetics and re-init on DOM changes (debounced to avoid performance hits)
     initMagnetics();
+    let debounceTimer: ReturnType<typeof setTimeout>;
     const observer = new MutationObserver(() => {
-      initMagnetics();
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(initMagnetics, 300);
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
@@ -154,6 +177,7 @@ const MagneticCursor = () => {
     document.documentElement.style.cursor = "none";
 
     return () => {
+      clearTimeout(debounceTimer);
       window.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseenter", onMouseEnter);
       document.removeEventListener("mouseleave", onMouseLeave);

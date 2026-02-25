@@ -59,6 +59,7 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 * {
   @apply selection:bg-light-200/15;
 }

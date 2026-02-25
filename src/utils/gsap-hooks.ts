@@ -19,15 +19,23 @@ export function useTextReveal<T extends HTMLElement>(options?: {
   y?: number;
 }) {
   const ref = useRef<T>(null);
-  const hasRun = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || hasRun.current) return;
-    hasRun.current = true;
+    if (!el) return;
 
-    // Wrap each word in a span for animation
+    // Restore original HTML before re-splitting (handles remount / back-nav)
     const elements = el.querySelectorAll("[data-gsap-text]");
+
+    elements.forEach((element) => {
+      // Store original HTML on first run
+      if (!(element as HTMLElement).dataset.gsapOriginal) {
+        (element as HTMLElement).dataset.gsapOriginal = element.innerHTML;
+      }
+      // Always reset to original before splitting
+      element.innerHTML =
+        (element as HTMLElement).dataset.gsapOriginal || element.innerHTML;
+    });
     const allWords: HTMLSpanElement[] = [];
 
     elements.forEach((element) => {
@@ -86,6 +94,14 @@ export function useTextReveal<T extends HTMLElement>(options?: {
 
     return () => {
       ctx.revert();
+      // Restore original text so it's visible if component remounts
+      const els = el.querySelectorAll("[data-gsap-text]");
+      els.forEach((element) => {
+        const original = (element as HTMLElement).dataset.gsapOriginal;
+        if (original) {
+          element.innerHTML = original;
+        }
+      });
     };
   }, [options?.duration, options?.stagger, options?.delay, options?.y]);
 
