@@ -14,7 +14,7 @@ export const ThirdSection = () => {
         <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-light-200 font-semibold">
           Where I&apos;ve Worked
         </h3>
-        <div className="hidden 340:block w-[90px] 380:w-[150px] h-[2px] bg-primary-100/30" />
+        <div className="hidden 340:block w-22.5 min-[380]:w-37.5 h-0.5 bg-primary-100/30" />
       </div>
       {/*  */}
       <div className="flex flex-wrap 576:hidden items-center gap-2 mb-4 mt-8">

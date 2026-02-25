@@ -24,17 +24,23 @@ export const Navbar = () => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   //
   return (
-    <nav className="max-w-[1440px] mx-auto sticky top-0 left-0 w-full bg-bgDark/10 backdrop-blur-sm flex items-center justify-between py-5 px-6 sm:px-[30px] md:px-12 gap-4 z-[899]">
+    <nav className="max-w-360 mx-auto sticky top-0 left-0 w-full bg-bgDark/10 backdrop-blur-sm flex items-center justify-between py-5 px-6 sm:px-7.5 md:px-12 gap-4 z-899">
       <Mlink
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         href="/#"
-        className="h-[55px] w-[55px] bg-dark-100 flex justify-center items-center rounded-full"
+        className="h-13.75 w-13.75 bg-dark-100 flex justify-center items-center rounded-full"
       >
-        <Image src="/logo3.png" width={50} height={50} alt="logo3" />
+        <Image
+          src="/logo3.png"
+          width={50}
+          height={50}
+          alt="logo3"
+          unoptimized
+        />
       </Mlink>
       <div
-        className="block 680:hidden shadow-[0_0_0_1.5px] shadow-primary-100 rounded-md p-[6px] cursor-pointer"
+        className="block 680:hidden shadow-[0_0_0_1.5px] shadow-primary-100 rounded-md p-1.5 cursor-pointer"
         onClick={() => setShowMenu(!showMenu)}
       >
         <HiMiniBars3BottomRight className="text-2xl" />
@@ -51,7 +57,7 @@ export const Navbar = () => {
           whileHover={{
             scale: 0.95,
             color: "#74c0fc",
-            transition: { type: "just" },
+            transition: { type: "tween" },
           }}
           href="/#about"
         >
@@ -62,7 +68,7 @@ export const Navbar = () => {
           whileHover={{
             scale: 0.95,
             color: "#74c0fc",
-            transition: { type: "just" },
+            transition: { type: "tween" },
           }}
           href="/#experience"
         >
@@ -73,7 +79,7 @@ export const Navbar = () => {
           whileHover={{
             scale: 0.95,
             color: "#74c0fc",
-            transition: { type: "just" },
+            transition: { type: "tween" },
           }}
           href="/#projects"
         >
@@ -84,7 +90,7 @@ export const Navbar = () => {
           whileHover={{
             scale: 0.95,
             color: "#74c0fc",
-            transition: { type: "just" },
+            transition: { type: "tween" },
           }}
           href="/#contact"
         >
@@ -96,8 +102,9 @@ export const Navbar = () => {
             scale: 0.95,
             color: "#ffffff",
             backgroundColor: "#4dabf7",
-            shadow: "none",
-            transition: { type: "just" },
+            // shadow: "none",
+            // transition: { type: "just" },
+            transition: { type: "tween" },
           }}
           href="/my-cv/OkoroJames_FrontendDeveloperCV.pdf"
           className="shadow-[0_0_0_1.3px] shadow-primary-200 px-4 py-2 rounded-md"
@@ -116,7 +123,7 @@ export const Navbar = () => {
             }}
             exit={{ height: 0 }}
             key={"mobile-menus"}
-            className="fixed flex 680:hidden flex-col bg-bgDark gap-3 text-primary-200 w-full left-0 top-[80px] overflow-y-hidden z-[889]"
+            className="fixed flex 680:hidden flex-col bg-bgDark gap-3 text-primary-200 w-full left-0 top-20 overflow-y-hidden z-889"
           >
             <Mlink
               className="py-2 pl-5 border-b border-b-primary-100 last:border-b-0"

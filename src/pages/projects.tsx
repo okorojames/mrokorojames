@@ -1,16 +1,12 @@
+import { ProjectCard, ProjectCardSkeleton } from "@/components/project-card";
 import { ErrorToast, SuccessToast } from "@/utils/toast-modals";
-import { Truncate } from "@/utils/truncate";
 import { QueryObserverResult, useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Image from "next/image";
 import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FiEdit } from "react-icons/fi";
-import { MdDelete } from "react-icons/md";
 import { Presence } from "@/utils/motion-exports";
 import { RxCross2 } from "react-icons/rx";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Ids, IdsType } from "../utils/ids";
 
 const ProjectsPage = () => {
   const [showUpdate, setShowUpdate] = useState<boolean>(false);
@@ -67,51 +63,23 @@ const ProjectsPage = () => {
 
   return (
     <Fragment>
-      <div className="max-w-[1440px] mx-auto w-[95%] relative mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-start gap-4 mb-4">
+      <div className="max-w-360 mx-auto w-[95%] relative mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mb-4 px-4">
         {loading &&
-          Ids.map((id: IdsType) => (
-            <div
-              className="w-[90%] 376:w-[300px] h-[300px] overflow-auto scrollbar-2 rounded-md border-[2.5px] border-primary-100/50 flex flex-col gap-4 animate-pulse"
-              key={id?.id}
-            >
-              <div className="w-full h-64 bg-primary-100/30" />
-              <div className="flex flex-col gap-5 p-3 h-full">
-                <h3 className="h-4 w-full bg-primary-100/30 rounded-md" />
-                <h3 className="h-3 w-full bg-primary-100/30 rounded-md" />
-                <h3 className="h-5 w-[90%] bg-primary-100/30 rounded-md" />
-                <h3 className="h-3 w-[60%] bg-primary-100/30 rounded-md" />
-              </div>
-            </div>
+          Array.from({ length: 6 }).map((_, index) => (
+            <ProjectCardSkeleton key={index} />
           ))}
         {projects &&
           currentData?.map((project: any) => (
-            <div key={project?._id}>
-              <div className="h-[250px] overflow-y-hidden">
-                <Image
-                  src={project?.image}
-                  alt={project?.name}
-                  width={300}
-                  height={300}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="h-[40%]">
-                <h4>{project?.name}</h4>
-                <p>{Truncate(project?.desc, 16)}</p>
-                <div className="flex items-center gap-2">
-                  <FiEdit
-                    className="text-primary-100"
-                    onClick={() => {
-                      setSelectedItem(project), setShowUpdate(true);
-                    }}
-                  />
-                  <MdDelete
-                    className="text-red-500"
-                    onClick={() => deleteProject(project?._id)}
-                  />
-                </div>
-              </div>
-            </div>
+            <ProjectCard
+              key={project._id}
+              project={project}
+              admin
+              onEdit={() => {
+                setSelectedItem(project);
+                setShowUpdate(true);
+              }}
+              onDelete={() => deleteProject(project._id)}
+            />
           ))}
         <Presence>
           {showUpdate && selectedItem && (
@@ -123,7 +91,7 @@ const ProjectsPage = () => {
           )}
         </Presence>
       </div>
-      <div className="mb-16 max-w-[1440px] mx-auto">
+      <div className="mb-16 max-w-360 mx-auto">
         {projects && (
           // <ReactPaginate
           //   breakLabel="..."
@@ -221,7 +189,7 @@ export const UpdateProject = ({
       };
       const res = await axios.patch(
         `/api/up-edit-prosject?id=${item?._id}`,
-        formData
+        formData,
       );
       if (res.status === 200 || res.status === 201) {
         SuccessToast("Project created successfully");
@@ -239,48 +207,58 @@ export const UpdateProject = ({
   //
   //
   return (
-    <div className="fixed w-full top-0 left-0 bottom-0 flex flex-col justify-center items-center bg-bgDark/45 backdrop-blur-sm z-[999]">
-      <div className="relative h-[350px] overflow-y-auto my-auto bg-light-100 rounded-md p-4">
-        <RxCross2
-          className="text-red-500 absolute right-2 top-2 text-3xl"
-          onClick={() => setShowUpdate(false)}
-        />
+    <div className="fixed inset-0 flex items-center justify-center bg-bgDark/60 backdrop-blur-md z-999">
+      <div
+        className="relative w-[92%] sm:w-130 max-h-[calc(100dvh-120px)] overflow-y-auto my-auto bg-dark-100 border border-primary-100/20 rounded-2xl shadow-[0_0_60px_-10px_rgba(116,192,252,0.15)] p-6 scrollbar-2"
+        data-lenis-prevent
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold text-light-200">Edit Project</h2>
+          <button
+            type="button"
+            onClick={() => setShowUpdate(false)}
+            className="text-light-300 hover:text-red-400 transition-colors p-1"
+          >
+            <RxCross2 className="text-xl" />
+          </button>
+        </div>
         <form
-          className="text-dark-100 w-[90%] sm:w-[450px] mx-auto flex flex-col gap-5 mt-8 mb-[50px]"
+          className="text-light-200 flex flex-col gap-5"
           onSubmit={handleSubmit(createProject)}
         >
-          <label htmlFor="name" className="flex flex-col gap-1">
-            <p>Project Name</p>
+          <label htmlFor="name" className="flex flex-col gap-1.5">
+            <p className="text-sm font-medium text-light-300">Project Name</p>
             <input
               type="text"
               id="name"
-              className="border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
+              className="bg-dark-200 border border-primary-100/30 focus:border-primary-100 outline-none rounded-lg py-2.5 px-3 text-light-200 placeholder:text-light-300/40 transition-colors"
               {...register("name", { required: "name is required" })}
             />
-            <small className="text-xs text-red-500">
+            <small className="text-xs text-red-400">
               {typeof errors?.name?.message === "string" &&
                 errors?.name?.message}
             </small>
           </label>
           {/*  */}
-          <label htmlFor="image" className="flex flex-col gap-1">
-            <p>Image</p>
-            <div className="flex items-center gap-2 rounded-md bg-light-100 border-primary-100 border-[1.5px] overflow-hidden">
-              <p className="w-full pl-2 overflow-x-hidden whitespace-nowrap">
+          <label htmlFor="image" className="flex flex-col gap-1.5">
+            <p className="text-sm font-medium text-light-300">Image</p>
+            <div className="flex items-center rounded-lg bg-dark-200 border border-primary-100/30 overflow-hidden cursor-pointer hover:border-primary-100/50 transition-colors">
+              <p className="flex-1 px-3 py-2.5 text-sm text-light-300/60 overflow-x-hidden whitespace-nowrap">
                 {image
                   ? image?.name
                   : item?.image
-                  ? item?.image
-                  : "Upload Image"}
+                    ? item?.image
+                    : "Upload Image"}
               </p>
-              <div className="bg-primary-200 text-light-100 py-2 px-2">
+              <div className="bg-primary-200/80 text-light-100 text-sm font-medium py-2.5 px-4">
                 Browse
               </div>
             </div>
             <input
               type="file"
               id="image"
-              className="border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
+              className="hidden"
               hidden
               onChange={(e: any) => {
                 const file = e.target.files[0];
@@ -294,57 +272,57 @@ export const UpdateProject = ({
         </small> */}
           </label>
           {/*  */}
-          <label htmlFor="link" className="flex flex-col gap-1">
-            <p>Project Link</p>
+          <label htmlFor="link" className="flex flex-col gap-1.5">
+            <p className="text-sm font-medium text-light-300">Project Link</p>
             <input
               type="text"
               id="link"
-              className="border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
+              className="bg-dark-200 border border-primary-100/30 focus:border-primary-100 outline-none rounded-lg py-2.5 px-3 text-light-200 placeholder:text-light-300/40 transition-colors"
               {...register("link", { required: "link is required" })}
             />
-            <small className="text-xs text-red-500">
+            <small className="text-xs text-red-400">
               {typeof errors?.link?.message === "string" &&
                 errors?.link?.message}
             </small>
           </label>
           {/*  */}
-          <label htmlFor="github" className="flex flex-col gap-1">
-            <p>Project Github Link</p>
+          <label htmlFor="github" className="flex flex-col gap-1.5">
+            <p className="text-sm font-medium text-light-300">GitHub Link</p>
             <input
               type="text"
               id="github"
-              className="border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
+              className="bg-dark-200 border border-primary-100/30 focus:border-primary-100 outline-none rounded-lg py-2.5 px-3 text-light-200 placeholder:text-light-300/40 transition-colors"
               {...register("github", { required: "github is required" })}
             />
-            <small className="text-xs text-red-500">
+            <small className="text-xs text-red-400">
               {typeof errors?.github?.message === "string" &&
                 errors?.github?.message}
             </small>
           </label>
           {/*  */}
-          <label htmlFor="stacks" className="flex flex-col gap-1">
-            <p>Stacks</p>
+          <label htmlFor="stacks" className="flex flex-col gap-1.5">
+            <p className="text-sm font-medium text-light-300">Stacks</p>
             <input
               type="text"
               id="stacks"
-              className="border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
+              className="bg-dark-200 border border-primary-100/30 focus:border-primary-100 outline-none rounded-lg py-2.5 px-3 text-light-200 placeholder:text-light-300/40 transition-colors"
               {...register("stacks", { required: "stacks is required" })}
             />
-            <small className="text-xs text-red-500">
+            <small className="text-xs text-red-400">
               {typeof errors?.stacks?.message === "string" &&
                 errors?.stacks?.message}
             </small>
           </label>
           {/*  */}
-          <label htmlFor="desc" className="flex flex-col gap-1">
-            <p>Project Description</p>
+          <label htmlFor="desc" className="flex flex-col gap-1.5">
+            <p className="text-sm font-medium text-light-300">Description</p>
             <textarea
               id="desc"
-              rows={6}
-              className="border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
+              rows={4}
+              className="bg-dark-200 border border-primary-100/30 focus:border-primary-100 outline-none rounded-lg py-2.5 px-3 text-light-200 placeholder:text-light-300/40 transition-colors resize-none"
               {...register("desc", { required: "description is required" })}
             />
-            <small className="text-xs text-red-500">
+            <small className="text-xs text-red-400">
               {typeof errors?.desc?.message === "string" &&
                 errors?.desc?.message}
             </small>
@@ -352,23 +330,19 @@ export const UpdateProject = ({
           {/*  */}
           <label
             htmlFor="topRated"
-            className="flex flex-row-reverse self-start items-center gap-1"
+            className="flex items-center gap-2.5 self-start cursor-pointer"
           >
-            <p>Top Rated</p>
             <input
               id="topRated"
               type="checkbox"
-              className="w-[18px] h-[18px] border-[1.5px] border-primary-100 outline-none rounded-md py-2 pl-2"
+              className="w-4.5 h-4.5 accent-primary-100 rounded"
               {...register("topRated")}
             />
-            <small className="text-xs text-red-500">
-              {typeof errors?.topRated?.message === "string" &&
-                errors?.topRated?.message}
-            </small>
+            <p className="text-sm text-light-300">Top Rated</p>
           </label>
           {/*  */}
-          <button className="border-[1.5px] border-primary-100 rounded-md py-2 pl-2 text-primary-100">
-            {saving ? "Saving" : "Save"}
+          <button className="mt-2 w-full bg-primary-200/90 hover:bg-primary-200 text-light-100 font-medium rounded-lg py-2.5 transition-colors">
+            {saving ? "Saving..." : "Save Changes"}
           </button>
         </form>
       </div>

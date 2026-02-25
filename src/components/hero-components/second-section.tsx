@@ -17,11 +17,11 @@ export const SecondSection = () => {
         <h3 className="text-xl sm:text-2xl md:text-3xl text-light-200 font-semibold">
           About Me
         </h3>
-        <div className="hidden 340:block w-[100px] 380:w-[150px] h-[2px] bg-primary-100/30" />
+        <div className="hidden 340:block w-25 min-[380]:w-37.5 h-0.5 bg-primary-100/30" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] items-center gap-y-12 md:gap-8 justify-items-center">
         <div>
-          <p className="leading-[26px] tracking-wide text-light-200">
+          <p className="leading-6.5 tracking-wide text-light-200">
             Hello!, My name is Okoro James, I&apos;ve always been passionate
             about building problem solving web applications, my interest in Web
             developement started in 2019, when I learned that I can actually
@@ -87,6 +87,7 @@ export const SecondSection = () => {
           height={300}
           className="rounded-lg object-cover  hover:rotate-0 transition-all duration-500 cursor-pointer"
           alt="Okoro James"
+          unoptimized
         />
       </div>
     </div>
