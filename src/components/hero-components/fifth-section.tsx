@@ -1,5 +1,4 @@
 import { Ma, Mlink } from "@/utils/motion-exports";
-import { useEffect, useState } from "react";
 import { BsTwitterX } from "react-icons/bs";
 import { CiLinkedin } from "react-icons/ci";
 import { FaGithub, FaWhatsapp } from "react-icons/fa";
@@ -7,10 +6,7 @@ import { HiOutlineMail } from "react-icons/hi";
 import { RiFacebookCircleFill } from "react-icons/ri";
 
 export const FifthSection = () => {
-  const [year, setYear] = useState<number | null>(null);
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
+  const year = new Date().getFullYear();
   return (
     <div id="contact" className="mt-16 section-container">
       <div className="flex gap-2 items-center select-none">
@@ -26,9 +22,16 @@ export const FifthSection = () => {
         Got a project you&apos;d like me to work on?
       </p>
       <p className="text-base md:text-lg text-light-200 mt-4 mb-4">
-        Reach out me to via these handles
+        Reach out to me via these handles
       </p>
       <div className="flex items-center gap-3 justify-center flex-wrap my-4">
+        <Ma
+          href="https://wa.me/2349077046324"
+          target="_blank"
+          className="flex justify-center items-center w-10"
+        >
+          <FaWhatsapp className="text-3xl" />
+        </Ma>
         <Mlink
           href="https://www.github.com/okorojames"
           target="_blank"
@@ -64,17 +67,9 @@ export const FifthSection = () => {
         >
           <HiOutlineMail className="text-3xl" />
         </Ma>
-        <Ma
-          href="https://wa.me/2349077046324"
-          target="_blank"
-          className="flex justify-center items-center w-10"
-        >
-          <FaWhatsapp className="text-3xl" />
-        </Ma>
       </div>
       <p className="flex gap-1 items-center text-light-200 justify-center tracking-wide my-12 font-light">
-        <span>Copyright &copy; Okoro James</span>
-        {year && <span>{year}</span>}
+        &copy; {year} Okoro James
       </p>
     </div>
   );
