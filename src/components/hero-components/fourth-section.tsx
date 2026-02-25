@@ -38,7 +38,7 @@ export const FourthSection = () => {
       </div>
       {/* top rated projects */}
       <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center items-stretch gap-6 mt-6 mb-4">
-        {!loading &&
+        {loading &&
           Array.from({ length: 4 }).map((_, index) => (
             <ProjectCardSkeleton key={index} />
           ))}

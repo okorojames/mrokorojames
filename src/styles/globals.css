@@ -94,6 +94,11 @@ body {
   @apply rounded-full !bg-primary-100/45;
 }
 
+/* Hide GSAP text-reveal elements until animation is ready (prevents FOUC) */
+[data-gsap-text]:not([data-gsap-ready]) {
+  visibility: hidden;
+}
+
 /* line-clamp utility for description truncation */
 .line-clamp-2 {
   display: -webkit-box;

@@ -1,14 +1,19 @@
 import LenisProvider from "@/components/LenisProvider";
-import MagneticCursor from "@/components/MagneticCursor";
 import { Navbar } from "@/components/navbar/navbar";
 import { QueryProvider } from "@/providers/query-provider";
 import "@/styles/globals.css";
 import { generateDefaultSeo } from "next-seo/pages";
 import type { AppProps } from "next/app";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { Fragment } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+// Desktop-only: load MagneticCursor lazily, skip SSR
+const MagneticCursor = dynamic(() => import("@/components/MagneticCursor"), {
+  ssr: false,
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

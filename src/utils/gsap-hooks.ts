@@ -1,12 +1,5 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-// Ensure ScrollTrigger is registered (safe to call multiple times)
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 /**
  * Hook: hero text reveal — splits text by words and animates them in.
@@ -23,6 +16,8 @@ export function useTextReveal<T extends HTMLElement>(options?: {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    let ctx: any = null;
 
     // Restore original HTML before re-splitting (handles remount / back-nav)
     const elements = el.querySelectorAll("[data-gsap-text]");
@@ -76,30 +71,37 @@ export function useTextReveal<T extends HTMLElement>(options?: {
 
       element.innerHTML = "";
       element.appendChild(fragment);
+      // Mark as ready so CSS reveals it (visibility: hidden is removed)
+      (element as HTMLElement).dataset.gsapReady = "";
       element
         .querySelectorAll(".gsap-word")
         .forEach((w) => allWords.push(w as HTMLSpanElement));
     });
 
-    const ctx = gsap.context(() => {
-      gsap.to(allWords, {
-        y: 0,
-        opacity: 1,
-        duration: options?.duration ?? 0.7,
-        stagger: options?.stagger ?? 0.04,
-        delay: options?.delay ?? 0.2,
-        ease: "power3.out",
+    // Dynamically import gsap to keep it out of the critical bundle
+    import("gsap").then(({ gsap }) => {
+      ctx = gsap.context(() => {
+        gsap.to(allWords, {
+          y: 0,
+          opacity: 1,
+          duration: options?.duration ?? 0.7,
+          stagger: options?.stagger ?? 0.04,
+          delay: options?.delay ?? 0.2,
+          ease: "power3.out",
+        });
       });
     });
 
     return () => {
-      ctx.revert();
+      if (ctx) ctx.revert();
       // Restore original text so it's visible if component remounts
       const els = el.querySelectorAll("[data-gsap-text]");
       els.forEach((element) => {
         const original = (element as HTMLElement).dataset.gsapOriginal;
         if (original) {
           element.innerHTML = original;
+          // Keep ready flag so text stays visible
+          (element as HTMLElement).dataset.gsapReady = "";
         }
       });
     };
