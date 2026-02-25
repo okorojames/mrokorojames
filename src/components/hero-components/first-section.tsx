@@ -27,7 +27,7 @@ export const FirstSection = () => {
           I&apos;m a Frontend Web Developer
         </p>
         <p className="text-base md:text-lg text-light-300" data-gsap-text>
-          I specialize in building responsive and scalable web applications, and
+          I specialize in building responsive and scalable web applications,
           <br /> I love to use my skill to build problem solving web apps, and
           <br />
           I&apos;m open to acquire new knowledge in the web development field.

@@ -25,8 +25,19 @@ const MagneticCursor = () => {
     if (!dot || !ring) return;
 
     // Track mouse position
+    let cursorVisible = false;
+    const showCursor = () => {
+      if (!cursorVisible) {
+        cursorVisible = true;
+        gsap.to([dot, ring], { opacity: 1, duration: 0.3 });
+      }
+    };
+
     const onMouseMove = (e: MouseEvent) => {
       mouse.current = { x: e.clientX, y: e.clientY };
+
+      // Show cursor on first move (handles mouse already being on page at mount)
+      showCursor();
 
       // Dot follows instantly
       gsap.set(dot, { x: e.clientX, y: e.clientY });
@@ -139,11 +150,12 @@ const MagneticCursor = () => {
       });
     };
 
-    // Cursor visibility
+    // Cursor visibility (mouseenter for re-entry after leaving viewport)
     const onMouseEnter = () => {
-      gsap.to([dot, ring], { opacity: 1, duration: 0.3 });
+      showCursor();
     };
     const onMouseLeave = () => {
+      cursorVisible = false;
       gsap.to([dot, ring], { opacity: 0, duration: 0.3 });
     };
 
