@@ -65,7 +65,7 @@ export const ProjectCard = ({
         </div>
 
         {/* Top-rated badge */}
-        {project.topRated && (
+        {admin && project.topRated && (
           <span className="absolute top-3 right-3 text-[11px] font-SF_Mono font-bold uppercase tracking-wider text-primary-100 bg-dark-200/70 backdrop-blur-sm rounded-full px-2.5 py-1 border border-primary-100/30">
             Top Rated
           </span>
