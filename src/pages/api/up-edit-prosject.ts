@@ -17,7 +17,7 @@ export const config = {
 };
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "PATCH") {
     return res.status(405).json({ message: "Method not allowed" });
@@ -45,7 +45,7 @@ export default async function handler(
     project.desc = desc || project.desc;
     project.topRated = topRated !== undefined ? topRated : project.topRated;
     project.link = link || project.link;
-    project.github = github || project.github;
+    project.github = github !== undefined ? github : project.github;
     project.stacks = stacks || project.stacks;
 
     await project.save();

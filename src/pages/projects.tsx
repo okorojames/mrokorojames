@@ -1,4 +1,5 @@
 import { ProjectCard, ProjectCardSkeleton } from "@/components/project-card";
+import { IProject } from "@/types/project";
 import { ErrorToast, SuccessToast } from "@/utils/toast-modals";
 import { QueryObserverResult, useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -10,7 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 const ProjectsPage = () => {
   const [showUpdate, setShowUpdate] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<IProject | null>(null);
   //
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -47,14 +48,14 @@ const ProjectsPage = () => {
     router.push(`?${params.toString()}`);
   };
   //
-  const deleteProject = async (id: any) => {
+  const deleteProject = async (id: string) => {
     try {
       const res = await axios.delete(`/api/delete-prosject-oi?id=${id}`);
       if (res.status === 200 || res.status === 201) {
         SuccessToast("Project deleted successfully");
         await getProjects();
       }
-    } catch (error: any) {
+    } catch {
       ErrorToast("Something went wrong");
     }
   };
@@ -69,7 +70,7 @@ const ProjectsPage = () => {
             <ProjectCardSkeleton key={index} />
           ))}
         {projects &&
-          currentData?.map((project: any) => (
+          currentData?.map((project: IProject) => (
             <ProjectCard
               key={project._id}
               project={project}
@@ -134,13 +135,13 @@ export const UpdateProject = ({
   setShowUpdate,
   getProjects,
 }: {
-  item: any;
-  setShowUpdate: any;
+  item: IProject;
+  setShowUpdate: (show: boolean) => void;
   getProjects: () => Promise<QueryObserverResult<Error, unknown>>;
 }) => {
   //
-  const toBase64 = async (file: any) => {
-    return new Promise((resolve, reject) => {
+  const toBase64 = async (file: File) => {
+    return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
@@ -149,12 +150,10 @@ export const UpdateProject = ({
   };
   //
   const [saving, setSaving] = useState<boolean>(false);
-  const [image, setImage] = useState<any>(null);
-  const [img_prev, setImgPrev] = useState<string>(item?.image);
+  const [image, setImage] = useState<File | null>(null);
   //
   const {
     register,
-    setValue,
     handleSubmit,
     reset,
     formState: { errors },
@@ -169,7 +168,7 @@ export const UpdateProject = ({
     },
   });
   //
-  const createProject = async (data: any) => {
+  const createProject = async (data: Record<string, unknown>) => {
     setSaving(true);
     try {
       // let formData = {};
@@ -198,7 +197,7 @@ export const UpdateProject = ({
         setShowUpdate(false);
         await getProjects();
       }
-    } catch (error: any) {
+    } catch {
       ErrorToast("Something went wrong");
     } finally {
       setSaving(false);
@@ -260,8 +259,8 @@ export const UpdateProject = ({
               id="image"
               className="hidden"
               hidden
-              onChange={(e: any) => {
-                const file = e.target.files[0];
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const file = e.target.files?.[0];
                 if (file) {
                   setImage(file);
                 }
@@ -287,17 +286,17 @@ export const UpdateProject = ({
           </label>
           {/*  */}
           <label htmlFor="github" className="flex flex-col gap-1.5">
-            <p className="text-sm font-medium text-light-300">GitHub Link</p>
+            <p className="text-sm font-medium text-light-300">
+              GitHub Link{" "}
+              <span className="text-light-300/40 text-xs">(optional)</span>
+            </p>
             <input
               type="text"
               id="github"
+              placeholder="https://github.com/..."
               className="bg-dark-200 border border-primary-100/30 focus:border-primary-100 outline-none rounded-lg py-2.5 px-3 text-light-200 placeholder:text-light-300/40 transition-colors"
-              {...register("github", { required: "github is required" })}
+              {...register("github")}
             />
-            <small className="text-xs text-red-400">
-              {typeof errors?.github?.message === "string" &&
-                errors?.github?.message}
-            </small>
           </label>
           {/*  */}
           <label htmlFor="stacks" className="flex flex-col gap-1.5">

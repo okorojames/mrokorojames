@@ -1,4 +1,5 @@
 import { ProjectCard, ProjectCardSkeleton } from "@/components/project-card";
+import { IProject } from "@/types/project";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Link from "next/link";
@@ -19,7 +20,7 @@ export const FourthSection = () => {
   //
   const topRatedProjects = useMemo(() => {
     if (projects) {
-      return projects?.filter((project: any) => project?.topRated);
+      return projects?.filter((project: IProject) => project?.topRated);
     }
   }, [projects]);
 
@@ -45,7 +46,7 @@ export const FourthSection = () => {
         {projects &&
           topRatedProjects
             ?.slice(0, 4)
-            ?.map((project: any) => (
+            ?.map((project: IProject) => (
               <ProjectCard key={project._id} project={project} />
             ))}
       </div>

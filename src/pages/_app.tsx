@@ -16,21 +16,48 @@ const MagneticCursor = dynamic(() => import("@/components/MagneticCursor"), {
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Okoro James Chizaram",
+    jobTitle: "Frontend Web Developer",
+    url: "https://www.okorojames.com",
+    sameAs: [
+      "https://github.com/okorojames",
+      "https://twitter.com/okorojames_",
+      "https://www.linkedin.com/in/okorojames",
+    ],
+    description:
+      "Frontend Web Developer with 3+ years of experience specializing in building responsive, scalable, and user-focused web applications using React, Next.js, and TypeScript.",
+    knowsAbout: [
+      "React",
+      "Next.js",
+      "TypeScript",
+      "JavaScript",
+      "Tailwind CSS",
+      "Frontend Development",
+      "Responsive Web Design",
+      "Scalable Web Applications",
+    ],
+  };
+
   return (
     <Fragment>
       <Head>
         {generateDefaultSeo({
-          title: "Okoro James",
-          description: "Okoro James's portfolio site",
-          canonical: "https://okorojames.vercel.app",
+          title: "Okoro James Chizaram | Frontend Web Developer",
+          description:
+            "Frontend Web Developer with 3+ years of experience building responsive, scalable web applications. Specializing in React, Next.js, and TypeScript. Open to new opportunities and collaborations.",
+          canonical: "https://www.okorojames.com",
           openGraph: {
             type: "website",
             locale: "en_IE",
-            url: "https://okorojames.vercel.app",
-            site_name: "Okoro James",
-            siteName: "Okoro James",
-            title: "Okoro James",
-            description: "Okoro James's portfolio site",
+            url: "https://www.okorojames.com",
+            site_name: "Okoro James Chizaram",
+            siteName: "Okoro James Chizaram",
+            title: "Okoro James Chizaram | Frontend Web Developer",
+            description:
+              "Frontend Web Developer specializing in building responsive and scalable web applications. 3+ years of professional experience delivering efficient, user-focused solutions with React, Next.js, and TypeScript.",
             profile: {
               firstName: "Okoro",
               lastName: "James",
@@ -39,21 +66,12 @@ export default function App({ Component, pageProps }: AppProps) {
             },
             images: [
               {
-                url: "https://okorojames.vercel.app/site-preview.png",
-                width: 800,
-                height: 600,
-                alt: "Og Image Alt",
-                type: "image/jpeg",
+                url: "https://www.okorojames.com/site-preview.png",
+                width: 1200,
+                height: 630,
+                alt: "Okoro James Chizaram - Frontend Web Developer Portfolio",
+                type: "image/png",
               },
-              {
-                url: "https://okorojames.netlify.app/site-preview.png",
-                width: 900,
-                height: 800,
-                alt: "Og Image Alt Second",
-                type: "image/jpeg",
-              },
-              { url: "https://okorojames.vercel.app/site-preview.png" },
-              { url: "https://okorojames.netlify.app/site-preview.png" },
             ],
           },
           twitter: {
@@ -61,7 +79,32 @@ export default function App({ Component, pageProps }: AppProps) {
             site: "@okorojames_",
             cardType: "summary_large_image",
           },
+          additionalMetaTags: [
+            {
+              name: "keywords",
+              content:
+                "Okoro James, Okoro James Chizaram, Frontend Developer, Web Developer, React Developer, Next.js Developer, TypeScript, JavaScript, Tailwind CSS, Portfolio, Responsive Web Design, Scalable Web Applications",
+            },
+            {
+              name: "author",
+              content: "Okoro James Chizaram",
+            },
+            {
+              name: "robots",
+              content: "index, follow",
+            },
+            {
+              name: "theme-color",
+              content: "#0a192f",
+            },
+          ],
         })}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
+        />
       </Head>
       <MagneticCursor />
       <LenisProvider>
