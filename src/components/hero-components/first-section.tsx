@@ -24,7 +24,7 @@ export const FirstSection = () => {
           className="font-semibold tracking-wider text-lg md:text-xl text-light-300"
           data-gsap-text
         >
-          I&apos;m a Frontend Web Developer
+          I&apos;m a Frontend Software Engineer
         </p>
         <p className="text-base md:text-lg text-light-300" data-gsap-text>
           I specialize in building responsive and scalable web applications,

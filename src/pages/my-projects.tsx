@@ -40,7 +40,9 @@ const MyProjectsPage = () => {
   return (
     <>
       <Head>
-        <title>Projects | Okoro James Chizaram — Frontend Web Developer</title>
+        <title>
+          Projects | Okoro James Chizaram — Frontend Software Engineer
+        </title>
         <meta
           name="description"
           content="Explore the portfolio of Okoro James Chizaram — a collection of responsive, scalable web applications built with React, Next.js, TypeScript, and more."
