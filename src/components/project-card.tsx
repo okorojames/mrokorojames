@@ -1,22 +1,15 @@
+import { IProject } from "@/types/project";
 import { cloudinaryLoader } from "@/utils/cloudinary-loader";
 import { Truncate } from "@/utils/truncate";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { FiExternalLink, FiEdit } from "react-icons/fi";
 import { IoLogoGithub } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 
 interface ProjectCardProps {
-  project: {
-    _id: string;
-    name: string;
-    desc: string;
-    stacks: string;
-    link: string;
-    github: string;
-    image: string;
-    topRated?: boolean;
-  };
+  project: IProject;
   /** Show edit / delete controls (admin page) */
   admin?: boolean;
   onEdit?: () => void;
@@ -30,6 +23,8 @@ export const ProjectCard = ({
   onDelete,
 }: ProjectCardProps) => {
   const stacks = project.stacks?.split(",").map((s) => s.trim());
+  const [expanded, setExpanded] = useState(false);
+  const isLongDesc = project.desc?.length > 80;
 
   return (
     <div className="project-card group relative flex flex-col rounded-xl overflow-hidden bg-dark-100/60 border border-primary-100/20 transition-all duration-300 hover:border-primary-100/50 hover:shadow-[0_0_30px_-5px_rgba(116,192,252,0.15)]">
@@ -54,14 +49,16 @@ export const ProjectCard = ({
             <span>Visit</span>
             <FiExternalLink className="text-xs" />
           </Link>
-          <Link
-            href={project.github}
-            target="_blank"
-            className="flex items-center gap-1.5 text-sm font-medium text-light-100 bg-light-200/15 backdrop-blur-sm rounded-full px-3 py-1.5 hover:bg-light-200/25 transition-colors"
-          >
-            <span>GitHub</span>
-            <IoLogoGithub className="text-sm" />
-          </Link>
+          {project.github && (
+            <Link
+              href={project.github}
+              target="_blank"
+              className="flex items-center gap-1.5 text-sm font-medium text-light-100 bg-light-200/15 backdrop-blur-sm rounded-full px-3 py-1.5 hover:bg-light-200/25 transition-colors"
+            >
+              <span>GitHub</span>
+              <IoLogoGithub className="text-sm" />
+            </Link>
+          )}
         </div>
 
         {/* Top-rated badge */}
@@ -79,13 +76,25 @@ export const ProjectCard = ({
           {Truncate(project.name, 40)}
         </h3>
 
-        {/* Description – clamped to 2 lines */}
-        <p
-          className="text-sm text-light-300 leading-relaxed line-clamp-2"
-          title={project.desc}
-        >
-          {project.desc}
-        </p>
+        {/* Description – expandable */}
+        <div>
+          <p
+            className={`text-sm text-light-300 leading-relaxed transition-all duration-300 ${
+              expanded ? "" : "line-clamp-2"
+            }`}
+          >
+            {project.desc}
+          </p>
+          {isLongDesc && (
+            <button
+              type="button"
+              onClick={() => setExpanded((prev) => !prev)}
+              className="text-xs text-primary-100 hover:text-primary-200 mt-1 transition-colors font-SF_Mono underline underline-offset-2"
+            >
+              {expanded ? "Show less" : "Read more"}
+            </button>
+          )}
+        </div>
 
         {/* Stacks */}
         <div className="flex flex-wrap gap-1.5 mt-1">
@@ -110,14 +119,16 @@ export const ProjectCard = ({
               <FiExternalLink className="text-sm" />
               <span>Live</span>
             </Link>
-            <Link
-              href={project.github}
-              target="_blank"
-              className="flex items-center gap-1 text-sm text-light-300 hover:text-primary-100 transition-colors"
-            >
-              <IoLogoGithub className="text-sm" />
-              <span>Code</span>
-            </Link>
+            {project.github && (
+              <Link
+                href={project.github}
+                target="_blank"
+                className="flex items-center gap-1 text-sm text-light-300 hover:text-primary-100 transition-colors"
+              >
+                <IoLogoGithub className="text-sm" />
+                <span>Code</span>
+              </Link>
+            )}
           </div>
 
           {admin && (

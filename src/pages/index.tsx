@@ -7,7 +7,7 @@ import { ThirdSection } from "@/components/hero-components/third-section";
 
 export default function Home() {
   return (
-    <main className="relative max-w-[1440px] mx-auto px-8 md:px-12 mb-[50px]">
+    <main className="relative max-w-360 mx-auto px-8 md:px-12 mb-12.5">
       {/* first section */}
       <FirstSection />
       {/* second section */}

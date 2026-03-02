@@ -20,21 +20,29 @@ export const SecondSection = () => {
         <div className="hidden 340:block w-25 min-[380]:w-37.5 h-0.5 bg-primary-100/30" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[1.2fr_1fr] items-center gap-y-12 md:gap-8 justify-items-center">
-        <div>
-          <p className="leading-6.5 tracking-wide text-light-200">
-            Hello!, My name is Okoro James, I&apos;ve always been passionate
-            about building problem solving web applications, my interest in Web
-            developement started in 2019, when I learned that I can actually
-            learn and build Amazing web applications, so, I started with the
-            basics, watching youtube Videos and reading articles, while
-            practicing what i learnt, fast forward to today, I have started
-            building a fulltime scalable, Web applications and have acquired so
-            much new skills and knowledge, with my 3+ years of experience in my
-            Web development career, working with Clients and Companies.
+        <div className="flex flex-col gap-4">
+          <p className="flex flex-col gap-2 leading-6.5 tracking-wide text-light-200">
+            <span>
+              Hello! My name is Okoro James. I&apos;ve always been passionate
+              about building problem-solving web applications. My interest in
+              web development started in 2019 when I realized I could learn and
+              build amazing web applications on my own.
+            </span>
+            <span>
+              I began with the basics—watching YouTube videos, reading articles,
+              and consistently practicing what I learned. Fast forward to today,
+              I build fully fledged, scalable web applications and have acquired
+              strong technical skills through hands-on experience.
+            </span>
+            <span>
+              With over 3 years of professional experience, I&apos;ve worked
+              with clients and companies to deliver efficient, user-focused
+              solutions.
+            </span>
           </p>
           {/*  */}
           <div className="flex flex-col gap-2 mt-2">
-            <p className="text-light-200">
+            <p className="mb-2 text-light-200">
               Here are few technologies I&apos;ve been working with recently:
             </p>
             <div className="grid grid-cols-[auto_auto] gap-y-4">

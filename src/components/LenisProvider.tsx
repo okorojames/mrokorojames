@@ -9,7 +9,9 @@ import { usePathname } from "next/navigation";
  * GSAP + Lenis are dynamically imported so they don't block initial load.
  */
 const LenisProvider = ({ children }: { children: ReactNode }) => {
-  const lenisRef = useRef<any>(null);
+  const lenisRef = useRef<InstanceType<typeof import("lenis").default> | null>(
+    null,
+  );
   const rafRef = useRef<((time: number) => void) | null>(null);
   const pathname = usePathname();
   const [isMobile, setIsMobile] = useState(false);
@@ -32,7 +34,7 @@ const LenisProvider = ({ children }: { children: ReactNode }) => {
     const init = async () => {
       const [{ default: Lenis }, { gsap }, { ScrollTrigger }] =
         await Promise.all([
-          import("@studio-freight/lenis"),
+          import("lenis"),
           import("gsap"),
           import("gsap/ScrollTrigger"),
         ]);

@@ -11,7 +11,7 @@ cloudinary.config({
 //
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "DELETE") {
     res.status(405).json({ message: "Method not allowed" });
@@ -22,7 +22,9 @@ export default async function handler(
   const project = await Project.findById(id);
   if (!project) return res.status(404).json({ message: "Project not found" });
   try {
-    await cloudinary.uploader.destroy(project?.imageId);
+    if (project.imageId) {
+      await cloudinary.uploader.destroy(project.imageId);
+    }
     await Project.findByIdAndDelete(id);
     res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
