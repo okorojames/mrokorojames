@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /projects
+Disallow: /add-project
+Disallow: /login
+Disallow: /api/
+
+Sitemap: https://okorojames.com/sitemap.xml
