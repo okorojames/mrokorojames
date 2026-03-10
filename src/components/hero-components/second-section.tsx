@@ -1,3 +1,4 @@
+import { cloudinaryLoader } from "@/utils/cloudinary-loader";
 import Image from "next/image";
 import { BiLogoTypescript } from "react-icons/bi";
 import { GrReactjs } from "react-icons/gr";
@@ -90,12 +91,17 @@ export const SecondSection = () => {
           </div>
         </div>
         <Image
-          src="/james.jpg"
+          src="https://res.cloudinary.com/dcwpjyezj/image/upload/v1773153357/uploads/OkoroJamesChizaram_jmdglg.png"
+          loader={cloudinaryLoader}
           width={300}
           height={300}
-          className="rounded-lg object-cover  hover:rotate-0 transition-all duration-500 cursor-pointer"
-          alt="Okoro James"
-          unoptimized
+          className="rounded-lg object-cover hover:rotate-0 transition-all duration-500 cursor-pointer"
+          alt="Okoro James Chizaram - Frontend Developer"
+          title="Okoro James Chizaram"
+          sizes="(max-width: 768px) 100vw, 300px"
+          priority
+          placeholder="blur"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPj/HwADBwIAMCbHYQAAAABJRU5ErkJggg=="
         />
       </div>
     </div>
