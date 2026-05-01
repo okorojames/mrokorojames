@@ -33,7 +33,7 @@ export const FirstSection = () => {
           I&apos;m open to acquire new knowledge in the web development field.
         </p>
         <Link
-          href="/my-cv/OkoroJames_FrontendDeveloperCV.pdf"
+          href="/my-cv/OkoroJames_FrontendEngineer.pdf"
           className="self-start shadow-[0_0_0_1.3px] shadow-primary-200 px-4 py-2 rounded-md"
           target="_blank"
         >

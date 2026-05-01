@@ -106,7 +106,7 @@ export const Navbar = () => {
             // transition: { type: "just" },
             transition: { type: "tween" },
           }}
-          href="/my-cv/OkoroJames_FrontendDeveloperCV.pdf"
+          href="/my-cv/OkoroJames_FrontendEngineer.pdf"
           className="shadow-[0_0_0_1.3px] shadow-primary-200 px-4 py-2 rounded-md"
           target="_blank"
         >
