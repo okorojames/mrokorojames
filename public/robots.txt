@@ -5,4 +5,4 @@ Disallow: /add-project
 Disallow: /login
 Disallow: /api/
 
-Sitemap: https://okorojames.com/sitemap.xml
+Sitemap: https://www.okorojames.com/sitemap.xml
