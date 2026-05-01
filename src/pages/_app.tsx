@@ -26,6 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
       "https://github.com/okorojames",
       "https://twitter.com/okorojames_",
       "https://www.linkedin.com/in/okorojames",
+      "https://www.facebook.com/mrokorojames",
     ],
     description:
       "Frontend Software Engineer with 3+ years of experience specializing in building responsive, scalable, and user-focused web applications using React, Next.js, and TypeScript.",
@@ -48,11 +49,9 @@ export default function App({ Component, pageProps }: AppProps) {
           title: "Okoro James Chizaram | Frontend Software Engineer",
           description:
             "Frontend Software Engineer with 3+ years of experience building responsive, scalable web applications. Specializing in React, Next.js, and TypeScript. Open to new opportunities and collaborations.",
-          canonical: "https://www.okorojames.com",
           openGraph: {
             type: "website",
             locale: "en_IE",
-            url: "https://www.okorojames.com",
             site_name: "Okoro James Chizaram",
             siteName: "Okoro James Chizaram",
             title: "Okoro James Chizaram | Frontend Software Engineer",
