@@ -12,6 +12,28 @@ export default function Home() {
       <Head>
         <link rel="canonical" href="https://www.okorojames.com" />
         <meta property="og:url" content="https://www.okorojames.com" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Okoro James Chizaram",
+              url: "https://www.okorojames.com",
+              description:
+                "Frontend Software Engineer Portfolio — React, Next.js, TypeScript",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate:
+                    "https://www.okorojames.com/search?q={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
       </Head>
       <main className="relative max-w-360 mx-auto px-8 md:px-12 mb-12.5">
         {/* first section */}
