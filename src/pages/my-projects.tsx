@@ -39,7 +39,11 @@ export const getServerSideProps: GetServerSideProps<{
   await connectDB();
 
   const [projects, total] = await Promise.all([
-    Project.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+    Project.find()
+      .sort({ order: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
     Project.countDocuments(),
   ]);
 
@@ -169,7 +173,7 @@ const MyProjectsPage = ({
                 <ProjectCard key={project._id} project={project} />
               ))}
         </div>
-        <div className="mb-16 w-full flex flex-col items-end">
+        <div className="mb-16 max-w-360 mx-auto w-[95%] flex flex-col items-end">
           {pagination && <Pagination totalPages={pagination.totalPages} />}
         </div>
       </div>

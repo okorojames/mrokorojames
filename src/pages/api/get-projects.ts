@@ -19,7 +19,7 @@ export default async function handler(
     const skip = (page - 1) * limit;
 
     const [projects, total] = await Promise.all([
-      Project.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Project.find().sort({ order: 1, createdAt: -1 }).skip(skip).limit(limit),
       Project.countDocuments(),
     ]);
 

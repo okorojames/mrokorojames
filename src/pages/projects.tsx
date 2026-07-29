@@ -6,13 +6,15 @@ import axios from "axios";
 import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Presence } from "@/utils/motion-exports";
-import { RxCross2 } from "react-icons/rx";
+import { Reorder } from "framer-motion";
+import { RxCross2, RxDragHandleDots2 } from "react-icons/rx";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/components/base-components/Pagination";
 
 const ProjectsPage = () => {
   const [showUpdate, setShowUpdate] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<IProject | null>(null);
+  const [showReorder, setShowReorder] = useState<boolean>(false);
   //
   const searchParams = useSearchParams();
   const page = searchParams.get("page") || 1;
@@ -48,37 +50,55 @@ const ProjectsPage = () => {
 
   return (
     <Fragment>
-      <div className="max-w-360 mx-auto w-[95%] relative mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mb-4 px-4">
-        {loading &&
-          Array.from({ length: 6 }).map((_, index) => (
-            <ProjectCardSkeleton key={index} />
-          ))}
-        {data &&
-          data?.data?.map((project: IProject) => (
-            <ProjectCard
-              key={project._id}
-              project={project}
-              admin
-              onEdit={() => {
-                setSelectedItem(project);
-                setShowUpdate(true);
-              }}
-              onDelete={() => deleteProject(project._id)}
-            />
-          ))}
-        <Presence>
-          {showUpdate && selectedItem && (
-            <UpdateProject
-              getProjects={getProjects}
-              item={selectedItem}
-              setShowUpdate={setShowUpdate}
-            />
-          )}
-        </Presence>
+      <div className="max-w-360 mx-auto w-[95%] relative mt-16">
+        <div className="flex justify-end mb-4 px-4">
+          <button
+            onClick={() => setShowReorder(true)}
+            className="text-sm font-medium text-light-100 bg-primary-200/80 hover:bg-primary-200 rounded-lg px-4 py-2 transition-colors cursor-pointer"
+          >
+            Reorder Projects
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mb-4 px-4">
+          {loading &&
+            Array.from({ length: 6 }).map((_, index) => (
+              <ProjectCardSkeleton key={index} />
+            ))}
+          {data &&
+            data?.data?.map((project: IProject) => (
+              <ProjectCard
+                key={project._id}
+                project={project}
+                admin
+                onEdit={() => {
+                  setSelectedItem(project);
+                  setShowUpdate(true);
+                }}
+                onDelete={() => deleteProject(project._id)}
+              />
+            ))}
+          <Presence>
+            {showUpdate && selectedItem && (
+              <UpdateProject
+                getProjects={getProjects}
+                item={selectedItem}
+                setShowUpdate={setShowUpdate}
+              />
+            )}
+          </Presence>
+        </div>
       </div>
-      <div className="mb-16 w-full flex flex-col items-end">
+      <div className="mb-16 max-w-360 mx-auto w-[95%] flex flex-col items-end">
         {data && <Pagination totalPages={data?.pagination?.totalPages} />}
       </div>
+      <Presence>
+        {showReorder && (
+          <ReorderProjects
+            setShowReorder={setShowReorder}
+            getProjects={getProjects}
+          />
+        )}
+      </Presence>
     </Fragment>
   );
 };
@@ -300,6 +320,125 @@ export const UpdateProject = ({
             {saving ? "Saving..." : "Save Changes"}
           </button>
         </form>
+      </div>
+    </div>
+  );
+};
+
+const ReorderProjects = ({
+  setShowReorder,
+  getProjects,
+}: {
+  setShowReorder: (show: boolean) => void;
+  getProjects: () => Promise<QueryObserverResult<Error, unknown>>;
+}) => {
+  const [saving, setSaving] = useState(false);
+  const [items, setItems] = useState<IProject[] | null>(null);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["all-projects-for-reorder"],
+    queryFn: async () => {
+      const res = await axios.get("/api/get-projects?page=1&limit=10000");
+      return res.data.data as IProject[];
+    },
+  });
+
+  const displayItems = items ?? data ?? [];
+
+  const handleSave = async () => {
+    const saveItems = items ?? data ?? [];
+    if (saveItems.length === 0) return;
+    setSaving(true);
+    try {
+      await axios.patch("/api/reorder-projects", {
+        items: saveItems.map((project, index) => ({
+          _id: project._id,
+          order: index,
+        })),
+      });
+      SuccessToast("Projects reordered");
+      setShowReorder(false);
+      await getProjects();
+    } catch {
+      ErrorToast("Failed to save order");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-bgDark/60 backdrop-blur-md z-999">
+      <div
+        className="relative w-[92%] sm:w-200 max-h-[calc(100dvh-80px)] flex flex-col bg-dark-100 border border-primary-100/20 rounded-2xl shadow-[0_0_60px_-10px_rgba(116,192,252,0.15)]"
+        data-lenis-prevent
+      >
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-primary-100/10">
+          <h2 className="text-lg font-semibold text-light-200">
+            Reorder Projects
+          </h2>
+          <button
+            onClick={() => setShowReorder(false)}
+            className="text-light-300 hover:text-red-400 transition-colors p-1 cursor-pointer"
+          >
+            <RxCross2 className="text-xl" />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 py-4 scrollbar-2">
+          {isLoading && (
+            <div className="text-light-300 text-sm text-center py-8">
+              Loading projects...
+            </div>
+          )}
+
+          {displayItems.length > 0 && (
+            <Reorder.Group
+              axis="y"
+              values={displayItems}
+              onReorder={setItems}
+              className="flex flex-col gap-2"
+            >
+              {displayItems.map((project, i) => (
+                <Reorder.Item
+                  key={project._id}
+                  value={project}
+                  className="flex items-center gap-3 bg-dark-200 rounded-lg px-4 py-3 border border-primary-100/10 cursor-grab active:cursor-grabbing select-none"
+                >
+                  <RxDragHandleDots2 className="text-light-300 shrink-0 text-lg" />
+                  <span className="text-xs font-mono text-light-300 w-5 shrink-0 text-right">
+                    {i + 1}
+                  </span>
+                  <div className="w-12 h-8 rounded overflow-hidden bg-dark-100 shrink-0">
+                    <img
+                      src={project.image}
+                      alt={project.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-sm text-light-200 truncate flex-1">
+                    {project.name}
+                  </span>
+                </Reorder.Item>
+              ))}
+            </Reorder.Group>
+          )}
+        </div>
+
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-primary-100/10">
+          <button
+            onClick={() => setShowReorder(false)}
+            className="text-sm text-light-300 hover:text-light-200 px-4 py-2 rounded-lg transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving || displayItems.length === 0}
+            className="text-sm font-medium text-light-100 bg-primary-200/80 hover:bg-primary-200 rounded-lg px-6 py-2 transition-colors disabled:opacity-40 cursor-pointer"
+          >
+            {saving ? "Saving..." : "Save Order"}
+          </button>
+        </div>
       </div>
     </div>
   );

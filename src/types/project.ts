@@ -8,6 +8,7 @@ export interface IProject {
   image: string;
   imageId?: string;
   topRated: boolean;
+  order: number;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -14,6 +14,7 @@ const ProjectSchema: Schema<IProjectDocument> = new Schema(
     image: { type: String, required: true },
     imageId: { type: String, required: true },
     topRated: { type: Boolean, required: true },
+    order: { type: Number, default: 0 },
   },
   {
     timestamps: true,

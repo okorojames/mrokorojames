@@ -28,7 +28,7 @@ export default function Document() {
           sizes="16x16"
         />
       </Head>
-      <body>
+      <body className="min-w-xs overflow-x-hidden">
         <Main />
         <NextScript />
       </body>
