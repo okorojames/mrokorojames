@@ -7,47 +7,31 @@ import { Fragment, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Presence } from "@/utils/motion-exports";
 import { RxCross2 } from "react-icons/rx";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Pagination } from "@/components/base-components/Pagination";
 
 const ProjectsPage = () => {
   const [showUpdate, setShowUpdate] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<IProject | null>(null);
   //
   const searchParams = useSearchParams();
-  const router = useRouter();
   const page = searchParams.get("page") || 1;
   const limit = searchParams.get("limit") || 6;
-  const currPage = parseInt(searchParams.get("page") || "1", 10);
   const {
-    data: projects,
+    data,
     isLoading: loading,
     refetch: getProjects,
   } = useQuery({
     queryKey: ["projects", page, limit],
     queryFn: async () => {
-      const res = await axios.get("/api/get-projects");
-      return res.data?.data;
+      const res = await axios.get(
+        `/api/get-projects?page=${page}&limit=${limit}`,
+      );
+      return res.data;
     },
     select: (data) => data,
   });
-  // paginate data
-  // the start index endIndex and currentData settings
-  const startIndex = (Number(page) - 1) * Number(limit);
-  const endIndex = Number(page) * Number(limit);
-  const currentData = projects?.slice(startIndex, endIndex);
-  // where we create the list of all the pagination numbers
-  const paginationNumbers = [];
-  for (let i = 1; i <= Math.ceil(projects?.length / Number(limit)); i++) {
-    paginationNumbers.push(i);
-  }
-  //
-  const handlePageClick = ({ selected }: { selected: number }) => {
-    const params = new URLSearchParams();
-    const page = selected + 1;
-    params.append("page", page.toString());
-    router.push(`?${params.toString()}`);
-  };
-  //
+
   const deleteProject = async (id: string) => {
     try {
       const res = await axios.delete(`/api/delete-prosject-oi?id=${id}`);
@@ -69,8 +53,8 @@ const ProjectsPage = () => {
           Array.from({ length: 6 }).map((_, index) => (
             <ProjectCardSkeleton key={index} />
           ))}
-        {projects &&
-          currentData?.map((project: IProject) => (
+        {data &&
+          data?.data?.map((project: IProject) => (
             <ProjectCard
               key={project._id}
               project={project}
@@ -92,36 +76,8 @@ const ProjectsPage = () => {
           )}
         </Presence>
       </div>
-      <div className="mb-16 max-w-360 mx-auto">
-        {projects && (
-          // <ReactPaginate
-          //   breakLabel="..."
-          //   // nextLabel={<FaChevronCircleRight className="text-3xl" />}
-          //   nextLabel={">"}
-          //   onPageChange={handlePageClick}
-          //   pageRangeDisplayed={5}
-          //   pageCount={projects?.totalPages}
-          //   // previousLabel={<FaChevronCircleLeft className="text-3xl" />}
-          //   previousLabel={"<"}
-          //   renderOnZeroPageCount={null}
-          //   className="project-paginate flex items-center justify-center flex-wrap gap-2 mt-7"
-          // />
-          <div className="flex items-center justify-center flex-wrap gap-2">
-            {paginationNumbers.map((number) => (
-              <button
-                key={number}
-                onClick={() => handlePageClick({ selected: number - 1 })}
-                className={`${
-                  currPage === number
-                    ? "bg-primary-200 text-light-200"
-                    : "bg-light-100 text-light-300"
-                } px-3 py-1 rounded-md`}
-              >
-                {number}
-              </button>
-            ))}
-          </div>
-        )}
+      <div className="mb-16 w-full flex flex-col items-end">
+        {data && <Pagination totalPages={data?.pagination?.totalPages} />}
       </div>
     </Fragment>
   );

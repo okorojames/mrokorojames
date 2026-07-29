@@ -1,42 +1,26 @@
 "use client";
+import { Pagination } from "@/components/base-components/Pagination";
 import { ProjectCard, ProjectCardSkeleton } from "@/components/project-card";
 import { IProject } from "@/types/project";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Head from "next/head";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const MyProjectsPage = () => {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const page = searchParams.get("page") || 1;
   const limit = searchParams.get("limit") || 6;
-  const currPage = parseInt(searchParams.get("page") || "1", 10);
-  const { data: projects, isLoading: loading } = useQuery({
+  const { data, isLoading: loading } = useQuery({
     queryKey: ["projects", page, limit],
     queryFn: async () => {
-      const res = await axios.get("/api/get-projects");
-      return res.data?.data;
+      const res = await axios.get(
+        `/api/get-projects?page=${page}&limit=${limit}`,
+      );
+      return res.data;
     },
   });
-  // paginate data
-  // the start index endIndex and currentData settings
-  const startIndex = (Number(page) - 1) * Number(limit);
-  const endIndex = Number(page) * Number(limit);
-  const currentData = projects?.slice(startIndex, endIndex);
-  // where we create the list of all the pagination numbers
-  const paginationNumbers = [];
-  for (let i = 1; i <= Math.ceil(projects?.length / Number(limit)); i++) {
-    paginationNumbers.push(i);
-  }
-  //
-  const handlePageClick = ({ selected }: { selected: number }) => {
-    const params = new URLSearchParams();
-    const page = selected + 1;
-    params.append("page", page.toString());
-    router.push(`/my-projects?${params.toString()}`);
-  };
-  //
+
   return (
     <>
       <Head>
@@ -81,40 +65,14 @@ const MyProjectsPage = () => {
             Array.from({ length: 6 }).map((_, index) => (
               <ProjectCardSkeleton key={index} />
             ))}
-          {projects &&
-            currentData?.map((project: IProject) => (
+          {data &&
+            data?.data?.map((project: IProject) => (
               <ProjectCard key={project._id} project={project} />
             ))}
         </div>
-        {projects && (
-          // <ReactPaginate
-          //   breakLabel="..."
-          //   // nextLabel={<FaChevronCircleRight className="text-3xl" />}
-          //   nextLabel={">"}
-          //   onPageChange={handlePageClick}
-          //   pageRangeDisplayed={5}
-          //   pageCount={Math.ceil(projects?.length / Number(limit))}
-          //   // previousLabel={<FaChevronCircleLeft className="text-3xl" />}
-          //   previousLabel={"<"}
-          //   renderOnZeroPageCount={null}
-          //   className="project-paginate flex items-center justify-center flex-wrap gap-2 mt-7"
-          // />
-          <div className="flex items-center justify-center flex-wrap gap-2">
-            {paginationNumbers.map((number) => (
-              <button
-                key={number}
-                onClick={() => handlePageClick({ selected: number - 1 })}
-                className={`${
-                  currPage === number
-                    ? "bg-primary-200 text-light-200"
-                    : "bg-light-100 text-light-300"
-                } px-3 py-1 rounded-md`}
-              >
-                {number}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="mb-16 w-full flex flex-col items-end">
+          {data && <Pagination totalPages={data?.pagination?.totalPages} />}
+        </div>
       </div>
     </>
   );
