@@ -7,7 +7,7 @@ export default function Document() {
         <meta charSet="utf-8" />
         <meta
           name="description"
-          content="Okoro James Chizaram — Frontend Software Engineer with 3+ years of experience building responsive, scalable web applications. Specializing in React, Next.js, and TypeScript. Open to new opportunities and collaborations."
+          content="Okoro James Chizaram — Software Engineer with 5+ years of experience building responsive, scalable web applications. Specializing in React, Next.js, and TypeScript. Open to new opportunities and collaborations."
         />
         <link
           rel="shortcut icon"

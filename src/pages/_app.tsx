@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Okoro James Chizaram",
-    jobTitle: "Frontend Software Engineer",
+    jobTitle: "Software Engineer",
     url: "https://www.okorojames.com",
     sameAs: [
       "https://github.com/okorojames",
@@ -29,7 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
       "https://www.facebook.com/mrokorojames",
     ],
     description:
-      "Frontend Software Engineer with 3+ years of experience specializing in building responsive, scalable, and user-focused web applications using React, Next.js, and TypeScript.",
+      "Software Engineer with 5+ years of experience specializing in building responsive, scalable, and user-focused web applications using React, Next.js, and TypeScript.",
     knowsAbout: [
       "React",
       "Next.js",
@@ -39,6 +39,15 @@ export default function App({ Component, pageProps }: AppProps) {
       "Frontend Development",
       "Responsive Web Design",
       "Scalable Web Applications",
+      "PostgreSQL",
+      "Prisma",
+      "Hono",
+      "Express",
+      "Software Engineering",
+      "Software",
+      "Software Engineer",
+      "App Development",
+      "Backend Development",
     ],
   };
 
@@ -46,17 +55,17 @@ export default function App({ Component, pageProps }: AppProps) {
     <Fragment>
       <Head>
         {generateDefaultSeo({
-          title: "Okoro James Chizaram | Frontend Software Engineer",
+          title: "Okoro James Chizaram | Software Engineer",
           description:
-            "Frontend Software Engineer with 3+ years of experience building responsive, scalable web applications. Specializing in React, Next.js, and TypeScript. Open to new opportunities and collaborations.",
+            "Software Engineer with 5+ years of experience building responsive, scalable web applications. Specializing in React, Next.js, and TypeScript. Open to new opportunities and collaborations.",
           openGraph: {
             type: "website",
             locale: "en_IE",
             site_name: "Okoro James Chizaram",
             siteName: "Okoro James Chizaram",
-            title: "Okoro James Chizaram | Frontend Software Engineer",
+            title: "Okoro James Chizaram | Software Engineer",
             description:
-              "Frontend Software Engineer specializing in building responsive and scalable web applications. 3+ years of professional experience delivering efficient, user-focused solutions with React, Next.js, and TypeScript.",
+              "Software Engineer specializing in building responsive and scalable web applications. 5+ years of professional experience delivering efficient, user-focused solutions with React, Next.js, and TypeScript.",
             profile: {
               firstName: "Okoro",
               lastName: "James",
@@ -68,7 +77,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 url: "https://www.okorojames.com/site-preview.png",
                 width: 1200,
                 height: 630,
-                alt: "Okoro James Chizaram - Frontend Software Engineer Portfolio",
+                alt: "Okoro James Chizaram - Software Engineer Portfolio",
                 type: "image/png",
               },
             ],
@@ -82,7 +91,7 @@ export default function App({ Component, pageProps }: AppProps) {
             {
               name: "keywords",
               content:
-                "Okoro James, Okoro James Chizaram, Frontend Software Engineer, Web Developer, React Developer, Next.js Developer, TypeScript, JavaScript, Tailwind CSS, Portfolio, Responsive Web Design, Scalable Web Applications",
+                "Okoro James, Okoro James Chizaram, Software Engineer, Web Developer, React Developer, Next.js Developer, TypeScript, JavaScript, Tailwind CSS, Portfolio, Responsive Web Design, Scalable Web Applications",
             },
             {
               name: "author",

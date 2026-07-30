@@ -21,7 +21,7 @@ export default function Home() {
               name: "Okoro James Chizaram",
               url: "https://www.okorojames.com",
               description:
-                "Frontend Software Engineer Portfolio — React, Next.js, TypeScript",
+                "Software Engineer Portfolio — React, Next.js, TypeScript",
               potentialAction: {
                 "@type": "SearchAction",
                 target: {

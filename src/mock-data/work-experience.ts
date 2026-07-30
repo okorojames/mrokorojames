@@ -12,7 +12,7 @@ export const workExperience: WorkExperience[] = [
   {
     id: 1,
     company: "Jekalo Digitals",
-    position: "Frontend Developer",
+    position: "Software Engineer",
     product: "Connershop, Arc Pay & GroSolar",
     from: "Nov 2023",
     to: "Present",
@@ -28,7 +28,7 @@ export const workExperience: WorkExperience[] = [
   {
     id: 2,
     company: "The Pake Group",
-    position: "Frontend Developer",
+    position: "Software Engineer",
     product: "The pake website",
     from: "Nov 2023",
     to: "Sept 2025",
@@ -42,7 +42,7 @@ export const workExperience: WorkExperience[] = [
   {
     id: 3,
     company: "Heartfelt",
-    position: "Frontend Developer",
+    position: "Software Engineer",
     product: "Heartfelt Website",
     from: "June 2023",
     to: "July 2023",
