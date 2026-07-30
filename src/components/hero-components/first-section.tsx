@@ -24,13 +24,16 @@ export const FirstSection = () => {
           className="font-semibold tracking-wider text-lg md:text-xl text-light-300"
           data-gsap-text
         >
-          I&apos;m a Frontend Software Engineer
+          I&apos;m a Software Engineer
         </p>
+
         <p className="text-base md:text-lg text-light-300" data-gsap-text>
-          I specialize in building responsive and scalable web applications,
-          <br /> I love to use my skill to build problem solving web apps, and
+          I specialize in building responsive and scalable web applications.
           <br />
-          I&apos;m open to acquire new knowledge in the web development field.
+          I&apos;m passionate about creating user-focused solutions that solve
+          real-world problems.
+          <br />
+          I&apos;m always eager to learn new technologies and improve my craft.
         </p>
         <Link
           href="/my-cv/OkoroJames_FrontendEngineer.pdf"

@@ -1,48 +1,131 @@
 "use client";
+import { Pagination } from "@/components/base-components/Pagination";
 import { ProjectCard, ProjectCardSkeleton } from "@/components/project-card";
 import { IProject } from "@/types/project";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import connectDB from "@/libs/mongodb";
+import Project from "@/models/project";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
-const MyProjectsPage = () => {
+interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+interface ProjectsResponse {
+  data: IProject[];
+  pagination: PaginationInfo;
+}
+
+export const getServerSideProps: GetServerSideProps<{
+  initialData: ProjectsResponse;
+}> = async (ctx) => {
+  ctx.res.setHeader(
+    "Cache-Control",
+    "private, no-cache, no-store, max-age=0, must-revalidate",
+  );
+
+  const page = Math.max(Number(ctx.query.page) || 1, 1);
+  const limit = Math.max(Number(ctx.query.limit) || 6, 1);
+  const skip = (page - 1) * limit;
+
+  await connectDB();
+
+  const [projects, total] = await Promise.all([
+    Project.find()
+      .sort({ order: 1, createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+    Project.countDocuments(),
+  ]);
+
+  return {
+    props: {
+      initialData: {
+        data: JSON.parse(JSON.stringify(projects)),
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+          hasNextPage: page < Math.ceil(total / limit),
+          hasPreviousPage: page > 1,
+        },
+      },
+    },
+  };
+};
+
+const MyProjectsPage = ({
+  initialData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const page = searchParams.get("page") || 1;
-  const limit = searchParams.get("limit") || 6;
-  const currPage = parseInt(searchParams.get("page") || "1", 10);
-  const { data: projects, isLoading: loading } = useQuery({
+  const page = Number(searchParams.get("page")) || 1;
+  const limit = Number(searchParams.get("limit")) || 6;
+
+  const shouldUseInitialData =
+    page === initialData.pagination.page &&
+    limit === initialData.pagination.limit;
+
+  const { data, isLoading: loading } = useQuery({
     queryKey: ["projects", page, limit],
     queryFn: async () => {
-      const res = await axios.get("/api/get-projects");
-      return res.data?.data;
+      const res = await axios.get(
+        `/api/get-projects?page=${page}&limit=${limit}`,
+      );
+      return res.data;
     },
+    ...(shouldUseInitialData ? { initialData } : {}),
   });
-  // paginate data
-  // the start index endIndex and currentData settings
-  const startIndex = (Number(page) - 1) * Number(limit);
-  const endIndex = Number(page) * Number(limit);
-  const currentData = projects?.slice(startIndex, endIndex);
-  // where we create the list of all the pagination numbers
-  const paginationNumbers = [];
-  for (let i = 1; i <= Math.ceil(projects?.length / Number(limit)); i++) {
-    paginationNumbers.push(i);
-  }
-  //
-  const handlePageClick = ({ selected }: { selected: number }) => {
-    const params = new URLSearchParams();
-    const page = selected + 1;
-    params.append("page", page.toString());
-    router.push(`/my-projects?${params.toString()}`);
+
+  const projects = data?.data;
+  const pagination = data?.pagination ?? initialData.pagination;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Projects | Okoro James Chizaram",
+    description:
+      "Explore the portfolio of Okoro James Chizaram — a collection of responsive, scalable web applications built with React, Next.js, TypeScript, and more.",
+    url: "https://www.okorojames.com/my-projects",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Okoro James Chizaram",
+      url: "https://www.okorojames.com",
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: initialData.data.map((project, index) => ({
+        "@type": "ListItem",
+        position:
+          index +
+          1 +
+          (initialData.pagination.page - 1) * initialData.pagination.limit,
+        item: {
+          "@type": "SoftwareApplication",
+          name: project.name,
+          description: project.desc,
+          url: project.link,
+          image: project.image,
+          applicationCategory: "WebApplication",
+          operatingSystem: "Web",
+        },
+      })),
+    },
   };
-  //
+
   return (
     <>
       <Head>
-        <title>
-          Projects | Okoro James Chizaram — Frontend Software Engineer
-        </title>
+        <title>Projects | Okoro James Chizaram — Software Engineer</title>
         <meta
           name="description"
           content="Explore the portfolio of Okoro James Chizaram — a collection of responsive, scalable web applications built with React, Next.js, TypeScript, and more."
@@ -68,6 +151,10 @@ const MyProjectsPage = () => {
           name="twitter:description"
           content="Explore responsive, scalable web applications built by Okoro James Chizaram using React, Next.js, and TypeScript."
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </Head>
       <div className="max-w-360 mx-auto mb-20">
         <div className="flex justify-center items-center">
@@ -75,46 +162,18 @@ const MyProjectsPage = () => {
             All My Projects
           </h3>
         </div>
-        {/*  */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mt-10 mb-10 px-4">
-          {loading &&
-            Array.from({ length: 6 }).map((_, index) => (
-              <ProjectCardSkeleton key={index} />
-            ))}
-          {projects &&
-            currentData?.map((project: IProject) => (
-              <ProjectCard key={project._id} project={project} />
-            ))}
+          {loading
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <ProjectCardSkeleton key={index} />
+              ))
+            : projects?.map((project: IProject) => (
+                <ProjectCard key={project._id} project={project} />
+              ))}
         </div>
-        {projects && (
-          // <ReactPaginate
-          //   breakLabel="..."
-          //   // nextLabel={<FaChevronCircleRight className="text-3xl" />}
-          //   nextLabel={">"}
-          //   onPageChange={handlePageClick}
-          //   pageRangeDisplayed={5}
-          //   pageCount={Math.ceil(projects?.length / Number(limit))}
-          //   // previousLabel={<FaChevronCircleLeft className="text-3xl" />}
-          //   previousLabel={"<"}
-          //   renderOnZeroPageCount={null}
-          //   className="project-paginate flex items-center justify-center flex-wrap gap-2 mt-7"
-          // />
-          <div className="flex items-center justify-center flex-wrap gap-2">
-            {paginationNumbers.map((number) => (
-              <button
-                key={number}
-                onClick={() => handlePageClick({ selected: number - 1 })}
-                className={`${
-                  currPage === number
-                    ? "bg-primary-200 text-light-200"
-                    : "bg-light-100 text-light-300"
-                } px-3 py-1 rounded-md`}
-              >
-                {number}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="mb-16 max-w-360 mx-auto w-[95%] flex flex-col items-end">
+          {pagination && <Pagination totalPages={pagination.totalPages} />}
+        </div>
       </div>
     </>
   );

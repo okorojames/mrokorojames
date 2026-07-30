@@ -33,6 +33,9 @@ export default async function handler(
       folder: folderName,
     });
     console.log(typeof img?.public_id);
+    const maxOrderProject = await Project.findOne().sort({ order: -1 });
+    const nextOrder = (maxOrderProject?.order ?? -1) + 1;
+
     const newProject = new Project({
       name,
       desc,
@@ -42,6 +45,7 @@ export default async function handler(
       stacks,
       image: img?.secure_url,
       imageId: img?.public_id,
+      order: nextOrder,
     });
     if (img) {
       await newProject.save();

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export default function middleware(req: NextRequest, res: NextResponse) {
   const isAuth = req.cookies.get("token");
   const pathname = req.nextUrl.pathname;
-  const restrictedPages = ["/add-project", "/projects"];
+  const restrictedPages = ["/add-project", "/projects", "/experiences"];
   if (!isAuth && restrictedPages.includes(pathname)) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
