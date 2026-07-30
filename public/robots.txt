@@ -2,6 +2,7 @@ User-Agent: *
 Allow: /
 Disallow: /projects
 Disallow: /add-project
+Disallow: /experiences
 Disallow: /login
 Disallow: /api/
 
