@@ -25,6 +25,27 @@ const LenisProvider = ({ children }: { children: ReactNode }) => {
     setIsMobile(touch);
   }, []);
 
+  useEffect(() => {
+    const stopScroll = () => lenisRef.current?.stop();
+    const resumeScroll = (event: Event) => {
+      const scrollPosition = (event as CustomEvent<number>).detail;
+      const lenis = lenisRef.current;
+
+      if (!lenis) return;
+
+      lenis.scrollTo(scrollPosition, { immediate: true, force: true });
+      lenis.start();
+    };
+
+    window.addEventListener("portfolio:scroll-lock", stopScroll);
+    window.addEventListener("portfolio:scroll-unlock", resumeScroll);
+
+    return () => {
+      window.removeEventListener("portfolio:scroll-lock", stopScroll);
+      window.removeEventListener("portfolio:scroll-unlock", resumeScroll);
+    };
+  }, []);
+
   // Initialize Lenis only on desktop, via dynamic import
   useLayoutEffect(() => {
     if (isMobile) return;
@@ -50,6 +71,10 @@ const LenisProvider = ({ children }: { children: ReactNode }) => {
       });
 
       lenisRef.current = lenis;
+
+      if (document.documentElement.dataset.scrollLocked === "true") {
+        lenis.stop();
+      }
 
       lenis.on("scroll", ScrollTrigger.update);
 
