@@ -49,6 +49,7 @@ export default async function handler(
     project.stacks = stacks || project.stacks;
 
     await project.save();
+    await res.revalidate("/my-projects").catch(() => undefined);
     res.status(200).json({ message: "Project deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", error });

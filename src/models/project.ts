@@ -21,6 +21,8 @@ const ProjectSchema: Schema<IProjectDocument> = new Schema(
   },
 );
 
+ProjectSchema.index({ order: 1, createdAt: -1 });
+
 const Project: Model<IProjectDocument> =
   mongoose.models.Project ||
   mongoose.model<IProjectDocument>("Project", ProjectSchema);

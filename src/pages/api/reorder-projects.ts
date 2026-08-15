@@ -29,6 +29,7 @@ export default async function handler(
     );
 
     await Project.bulkWrite(operations);
+    await res.revalidate("/my-projects").catch(() => undefined);
 
     res.status(200).json({ message: "Reordered successfully" });
   } catch (error) {
