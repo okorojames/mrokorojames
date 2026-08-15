@@ -23,6 +23,8 @@ const ExperienceSchema: Schema<IExperienceDocument> = new Schema(
   },
 );
 
+ExperienceSchema.index({ order: 1 });
+
 const Experience: Model<IExperienceDocument> =
   mongoose.models.Experience ||
   mongoose.model<IExperienceDocument>("Experience", ExperienceSchema);

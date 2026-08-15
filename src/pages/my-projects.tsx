@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import connectDB from "@/libs/mongodb";
 import Project from "@/models/project";
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import type { GetStaticProps, InferGetStaticPropsType } from "next";
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
 
@@ -24,16 +24,11 @@ interface ProjectsResponse {
   pagination: PaginationInfo;
 }
 
-export const getServerSideProps: GetServerSideProps<{
+export const getStaticProps: GetStaticProps<{
   initialData: ProjectsResponse;
-}> = async (ctx) => {
-  ctx.res.setHeader(
-    "Cache-Control",
-    "private, no-cache, no-store, max-age=0, must-revalidate",
-  );
-
-  const page = Math.max(Number(ctx.query.page) || 1, 1);
-  const limit = Math.max(Number(ctx.query.limit) || 6, 1);
+}> = async () => {
+  const page = 1;
+  const limit = 6;
   const skip = (page - 1) * limit;
 
   await connectDB();
@@ -61,12 +56,13 @@ export const getServerSideProps: GetServerSideProps<{
         },
       },
     },
+    revalidate: 300,
   };
 };
 
 const MyProjectsPage = ({
   initialData,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 1;
   const limit = Number(searchParams.get("limit")) || 6;
@@ -83,7 +79,9 @@ const MyProjectsPage = ({
       );
       return res.data;
     },
-    ...(shouldUseInitialData ? { initialData } : {}),
+    ...(shouldUseInitialData
+      ? { initialData, staleTime: 60 * 1000 }
+      : {}),
   });
 
   const projects = data?.data;

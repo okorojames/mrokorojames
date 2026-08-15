@@ -50,6 +50,7 @@ export default async function handler(
     if (img) {
       await newProject.save();
     }
+    await res.revalidate("/my-projects").catch(() => undefined);
     res.status(201).json({ message: "Project created successfully" });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong", error });
