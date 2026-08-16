@@ -115,7 +115,7 @@ export const SecondSection = () => {
         </div>
 
         <Image
-          src="https://res.cloudinary.com/dcwpjyezj/image/upload/v1773153357/uploads/OkoroJamesChizaram_jmdglg.png"
+          src="https://res.cloudinary.com/dcwpjyezj/image/upload/v1786874151/uploads/okorojames_is3leo.jpg"
           loader={cloudinaryLoader}
           width={300}
           height={300}
