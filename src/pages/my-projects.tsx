@@ -160,7 +160,8 @@ const MyProjectsPage = ({
             All My Projects
           </h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mt-10 mb-10 px-4">
+        {/* previous: <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mt-10 mb-10 px-4"> */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch gap-6 mt-10 mb-10 px-4">
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
                 <ProjectCardSkeleton key={index} />

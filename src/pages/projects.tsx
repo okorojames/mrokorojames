@@ -10,6 +10,7 @@ import { Reorder } from "framer-motion";
 import { RxCross2, RxDragHandleDots2 } from "react-icons/rx";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "@/components/base-components/Pagination";
+import Image from "next/image";
 
 const ProjectsPage = () => {
   const [showUpdate, setShowUpdate] = useState<boolean>(false);
@@ -59,7 +60,8 @@ const ProjectsPage = () => {
             Reorder Projects
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mb-4 px-4">
+        {/* previous: <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center items-stretch gap-6 mb-4 px-4"> */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch gap-6 mb-4 px-4">
           {loading &&
             Array.from({ length: 6 }).map((_, index) => (
               <ProjectCardSkeleton key={index} />
@@ -409,7 +411,9 @@ const ReorderProjects = ({
                     {i + 1}
                   </span>
                   <div className="w-12 h-8 rounded overflow-hidden bg-dark-100 shrink-0">
-                    <img
+                    <Image
+                      width={800}
+                      height={400}
                       src={project.image}
                       alt={project.name}
                       className="w-full h-full object-cover"
