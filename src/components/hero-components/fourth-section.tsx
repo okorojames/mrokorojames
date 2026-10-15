@@ -38,7 +38,8 @@ export const FourthSection = () => {
         <div className="hidden 340:block w-22.5 380:w-[150px] h-0.5 bg-primary-100/30" />
       </div>
       {/* top rated projects */}
-      <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center items-stretch gap-6 mt-6 mb-4">
+      {/* previous: <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center items-stretch gap-6 mt-6 mb-4"> */}
+      <div className="grid grid-cols-1 md:grid-cols-2 items-stretch gap-6 mt-6 mb-4">
         {loading &&
           Array.from({ length: 4 }).map((_, index) => (
             <ProjectCardSkeleton key={index} />

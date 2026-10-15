@@ -26,8 +26,9 @@ export const ProjectCard = ({
   const [expanded, setExpanded] = useState(false);
   const isLongDesc = project.desc?.length > 80;
 
+  // previous: <div className="project-card group relative flex flex-col rounded-xl overflow-hidden bg-dark-100/60 border border-primary-100/20 transition-all duration-300 hover:border-primary-100/50 hover:shadow-[0_0_30px_-5px_rgba(116,192,252,0.15)]">
   return (
-    <div className="project-card group relative flex flex-col rounded-xl overflow-hidden bg-dark-100/60 border border-primary-100/20 transition-all duration-300 hover:border-primary-100/50 hover:shadow-[0_0_30px_-5px_rgba(116,192,252,0.15)]">
+    <div className="project-card group relative flex flex-col w-full rounded-xl overflow-hidden bg-dark-100/60 border border-primary-100/20 transition-all duration-300 hover:border-primary-100/50 hover:shadow-[0_0_30px_-5px_rgba(116,192,252,0.15)]">
       {/* ── Image area ── */}
       <div className="relative aspect-video overflow-hidden">
         <Image
